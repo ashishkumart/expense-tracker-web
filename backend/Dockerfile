@@ -13,4 +13,4 @@ RUN npm install
 
 EXPOSE 5000
 
-CMD ["nodemon", "server.js"]
+CMD ["nodemon", "src/server.js"]
