@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-data # it should be same as the volume name in the docker-compose.yml
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:  
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-data # it should be same as the volume name in the docker-compose.yml
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:7.0
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: db-storage
+          mountPath: /data/db
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: mongo-data # it should be same as the volume name in the docker-compose.yml
+--- IGNORE ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
