@@ -26,12 +26,9 @@ services:
     build: ./frontend
     container_name: dev_frontend
     ports:
-      - "8080:8080"
-    volumes:
-      - ./frontend:/app             # Binds your local Flutter code to the container
-    command: flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0
+    - "8080:80"
     depends_on:
-      - backend
+    - backend
 volumes:
   mongo_data:
 
